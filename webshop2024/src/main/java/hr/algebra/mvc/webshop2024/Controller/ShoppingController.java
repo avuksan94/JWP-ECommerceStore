@@ -111,7 +111,7 @@ public class ShoppingController {
 
         for (var realCartItem : realCartItems) {
             CartItemVM cartItem = new CartItemVM();
-            String imageLink = "https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png"; // Default image link
+            String imageLink = "https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png";
 
             for (var image : productImages) {
                 if (Objects.equals(image.getProduct().getProductId(), realCartItem.getProduct().getProductId())) {
@@ -135,6 +135,4 @@ public class ShoppingController {
 
         return "shoppingcarts/shoppingcart-display";
     }
-
-
 }

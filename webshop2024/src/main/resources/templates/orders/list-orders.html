@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>ShoppingCart details</title>
+    <title>Order details</title>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Favicon-->
@@ -14,7 +14,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
     <!-- Core theme CSS (includes Bootstrap)-->
     <link rel="stylesheet" th:href="@{/css/shopProducts.css}">
-    <link rel="stylesheet" th:href="@{/css/shopSingleShoppingcart.css}">
+    <link rel="stylesheet" th:href="@{/css/userViewOrders.css}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
@@ -56,34 +56,26 @@
 <body class="d-flex flex-column">
 <div th:replace="${navbarPath}"></div>
 <section class="py-5 bg-light">
-    <div class="container">
-        <h2>Your shopping cart</h2>
-        <div th:each="cartItem : ${cartItems}" class="shopping-cart-content">
-            <div class="product-image">
-                <img class="animate__animated animate__fadeInLeft" th:src="${cartItem.imageUrls}" alt="Product Image">
-            </div>
-            <div class="product-details">
-                <h4 class="product-title" th:text="${cartItem.productName}">Product Name</h4>
-                <div class="quantity-controls">
-                    <span th:text="${cartItem.quantity}">0</span>
-                    <button class="btn change-quantity decrease-quantity" th:attr="data-product-id=${cartItem.productId}, data-change-type='decrease'"> Remove </button>
-                    <button class="btn change-quantity increase-quantity" th:attr="data-product-id=${cartItem.productId}, data-change-type='increase'"> Add more </button>
+    <div class="container mt-5">
+        <h2>Your Orders</h2>
+        <div th:each="userOrder : ${userOrders}">
+            <div class="card mb-3">
+                <div class="card-header order-header">
+                    <h5>Order #<span th:text="${userOrder.order.orderId}"></span></h5>
+                    <p>Date: <span th:text="${userOrder.order.purchaseDate}"></span></p>
+                    <p>Total Amount: <span th:text="${userOrder.order.totalAmount}"></span> USD</p>
+                    <p>Payment Method: <span th:text="${userOrder.order.paymentMethod}"></span></p>
                 </div>
-                <p class="product-price" th:text="${cartItem.productPrice}">$99.99</p>
-            </div>
-        </div>
-        <div class="container my-5">
-            <div class="order-finalization-container">
-                <form action="/webShop/order/finalize" method="post" class="order-finalize-form">
-                    <div class="form-group">
-                        <select name="paymentMethod" class="form-control">
-                            <option value="PAYPAL">Paypal</option>
-                            <option value="STRIPE">Stripe</option>
-                            <option value="CASH_ON_PICK_UP">Cash on Pick-up</option>
-                        </select>
+                <div class="card-body order-body">
+                    <h6 class="card-title">Order Items</h6>
+                    <div th:each="orderItem : ${userOrder.orderItems}">
+                        <div class="order-item">
+                            <p>Product: <span th:text="${orderItem.productName}"></span></p>
+                            <p>Quantity: <span th:text="${orderItem.quantity}"></span></p>
+                            <p>Price per item: <span th:text="${orderItem.productPrice}"></span> USD</p>
+                        </div>
                     </div>
-                    <button class="btn btn-custom btn-lg" type="submit">Finalize Order</button>
-                </form>
+                </div>
             </div>
         </div>
     </div>

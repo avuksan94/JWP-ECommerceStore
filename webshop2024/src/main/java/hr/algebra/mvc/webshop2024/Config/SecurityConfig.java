@@ -40,6 +40,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/webShop/security/manualLogout").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/webShop/security/showFormCreateUser").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/webShop/security/saveUser").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/webShop/security/saveUser").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/webShop/auth/status").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/webShop/navbar").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/webShop/products/showSelectedProduct").permitAll()
@@ -71,6 +72,10 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/webShop/admin/images/showFormForUpdateImage").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/webShop/admin/images/save").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/webShop/admin/images/delete").hasRole("ADMIN")
+
+                                //SHOPPER - ORDERS
+                                .requestMatchers(HttpMethod.POST, "/webShop/order/finalize").hasRole("SHOPPER")
+                                .requestMatchers(HttpMethod.GET, "/webShop/order/forShopper").hasRole("SHOPPER")
 
                                 //Shopping controller
                                 .requestMatchers(HttpMethod.POST, "/webShop/shopping/removeFromCartCart").permitAll()

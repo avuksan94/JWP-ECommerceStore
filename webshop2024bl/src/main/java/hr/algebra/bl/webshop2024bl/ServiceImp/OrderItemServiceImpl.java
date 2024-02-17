@@ -2,7 +2,9 @@ package hr.algebra.bl.webshop2024bl.ServiceImp;
 
 import hr.algebra.bl.webshop2024bl.Service.OrderItemService;
 import hr.algebra.dal.webshop2024dal.Entity.Image;
+import hr.algebra.dal.webshop2024dal.Entity.Order;
 import hr.algebra.dal.webshop2024dal.Entity.OrderItem;
+import hr.algebra.dal.webshop2024dal.Entity.Product;
 import hr.algebra.dal.webshop2024dal.Repository.OrderItemRepository;
 import hr.algebra.utils.CustomExceptions.CustomNotFoundException;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,16 @@ public class OrderItemServiceImpl implements OrderItemService {
             throw new CustomNotFoundException("Order Item id not found - " + id);
         }
         return orderItemOptional.get();
+    }
+
+    @Override
+    public Optional<OrderItem> findByOrderAndProduct(Order order, Product product) {
+        return orderItemRepo.findByOrderAndProduct(order,product);
+    }
+
+    @Override
+    public List<OrderItem> findByOrder(Order order) {
+        return orderItemRepo.findByOrder(order);
     }
 
     @Override
