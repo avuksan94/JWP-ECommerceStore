@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Update product info</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link rel="stylesheet" th:href="@{/css/shopProducts.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+</head>
+<body>
+<!-- Navigation-->
+<!-- Must have placeholder present on every page(jQuery needs to load before bootstrap) -->
+<div id="navbar-placeholder"></div>
+<script>
+    // Define these outside of $(document).ready
+    var selectedImage = null;
+
+    function selectImage(imageId, element) {
+        $('#selectedImageId').val(imageId); // Use jQuery to set the value for simplicity
+
+        if (selectedImage != null) {
+            selectedImage.classList.remove('selected');
+        }
+
+        element.classList.add('selected');
+        selectedImage = element;
+    }
+
+    function viewImage(imageSrc) {
+        document.getElementById('modalImage').src = imageSrc;
+        $('#imageModal').modal('show');
+    }
+
+    function handleImageClick(element) {
+        var imageId = element.getAttribute('data-image-id');
+        var imageContent = element.getAttribute('data-image-content');
+        selectImage(imageId, element);
+        viewImage(imageContent);
+    }
+
+    $(document).ready(function() {
+    $("#navbar-placeholder").load("/shared/navbarAdmin.html");
+
+    // Select and highlight the image that is currently selected
+    var selectedImageId = $('#selectedImageId').val();
+    if (selectedImageId) {
+        var selectedElement = $('img[data-image-id="' + selectedImageId + '"]');
+        if (selectedElement.length > 0) {
+            selectImage(selectedImageId, selectedElement[0]);
+        }
+    }
+});
+</script>
+
+<!-- Section-->
+<section class="py-5 bg-light">
+    <div class="container px-4 px-lg-5 mt-5">
+        <p class="h4 text-black mb-4">Product Info</p>
+
+        <form action="#" th:action="@{/webShop/admin/products/save}"
+              th:object="${product}" method = "POST">
+
+            <input type="hidden" id="selectedImageId" th:field="*{selectedImageId}" />
+            <input type="hidden" th:field="*{productId}">
+
+            <p th:errors="*{name}"></p>
+            <input type="text" th:field="*{name}"
+                   class="form-control mb-4 w-25" placeholder="Name">
+
+            <p th:errors="*{description}"></p>
+            <input type="text" th:field="*{description}"
+                   class="form-control mb-4 w-25" placeholder="Description">
+
+            <p th:errors="*{price}"></p>
+            <input type="text" th:field="*{price}"
+                   class="form-control mb-4 w-25" placeholder="Price">
+
+            <p th:errors="*{subcategoryId}"></p>
+            <select th:field="*{subcategoryId}" class="form-control mb-4 w-25">
+                <option value="-1">Select Subcategory</option>
+                <option th:each="subcategory : ${subcategories}" th:value="${subcategory.subcategoryId}" th:text="${subcategory.name}"></option>
+            </select>
+
+            <!-- Gallery -->
+            <div class="row scrollable-gallery">
+                <div th:each="image : ${images}" class="col-lg-4 col-md-12 mb-4 mb-lg-0">
+                    <img th:id="'image' + ${image.imageId}"
+                         th:src="${image.imageUrl}"
+                         class="w-100 shadow-1-strong rounded mb-4"
+                         alt="Image"
+                         th:data-image-id="${image.imageId}"
+                         th:data-image-content="${image.imageUrl}"
+                         onclick="handleImageClick(this)"
+                         style="cursor: pointer;" />
+                </div>
+            </div>
+            <!-- Gallery -->
+            <br>
+            <p th:text="${errorMessage}"></p>
+
+            <button type="submit" class="btn custom-add-button col-2">Save </button>
+
+        </form>
+        <br>
+        <br>
+        <a th:href="@{/webShop/admin/products/list}" class="btn custom-add-button col-2">Back to products</a>
+    </div>
+
+    <div class="modal fade" id="imageModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img id="modalImage" class="img-fluid" src="" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</section>
+<!-- Footer-->
+<footer class="py-5 custom-gradient mt-auto">
+    <div class="container"><p class="m-0 text-center text-white">avuksan &copy; JWP 2024</p></div>
+</footer>
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+</body>
+</html>

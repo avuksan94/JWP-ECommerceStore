@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Product Info</title>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link rel="stylesheet" th:href="@{/css/shopProducts.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+</head>
+<body class="d-flex flex-column">
+<!-- Navigation-->
+<!-- Must have placeholder present on every page(jQuery needs to load before bootstrap) -->
+<div id="navbar-placeholder"></div>
+<script>
+    $(document).ready(function(){
+        $("#navbar-placeholder").load("/shared/navbarAdmin.html");
+    });
+</script>
+<header class="bg-dark py-3">
+    <div class="container px-4 px-lg-5 my-3">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder animate__animated animate__backInLeft">
+                <a th:href="@{/webShop/admin/subcategories/showFormForAddSubcategory}">
+                    <i class="bi bi-tags" style="color: white;"></i>
+                </a>
+            </h1>
+            <p class="lead fw-normal text-white-50 mb-0 animate__animated animate__backInRight">Add new Subcategory</p>
+        </div>
+    </div>
+</header>
+<!-- Section-->
+<section class="py-5">
+    <div class="container d-flex justify-content-center">
+        <div class="card w-75"> <!-- Removed inline style for width -->
+            <ul class="list-group list-group-flush">
+                <!-- Loop over each category in the categories list -->
+                <li th:each="subcategory : ${subcategories}" class="tags-cards-gradient list-group-item d-flex justify-content-between align-items-center">
+                    <!-- Subcategory details -->
+                    <div>
+                        <h5 class="fw-bolder d-inline-block mr-2" th:text="${subcategory.subcategoryId}">Category ID</h5>
+                        <h5 class="fw-bolder d-inline-block mr-2" th:text="${subcategory.name}">Subcategory Name</h5>
+                        <h5 class="fw-bolder d-inline-block mr-2" th:text="${subcategory.category.name}">Category Name</h5>
+                    </div>
+
+                    <!-- Action buttons -->
+                    <div>
+                        <a th:href="@{/webShop/admin/subcategories/showFormForUpdateSubcategory(subcategoryId=${subcategory.subcategoryId})}" class="btn custom-gradient text-white btn-sm">
+                            <i class="bi bi-pen"></i>
+                        </a>
+                        <a th:href="@{/webShop/admin/subcategories/delete(subcategoryId=${subcategory.subcategoryId})}" class="btn btn-danger btn-sm" onclick="if (!(confirm('Are you sure you want to delete this subcategory?'))) return false">
+                            <i class="bi bi-trash-fill"></i>
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- Footer-->
+<footer class="py-5 custom-gradient mt-auto">
+    <div class="container"><p class="m-0 text-center text-white">avuksan &copy; JWP 2024</p></div>
+</footer>
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+</body>
+</html>

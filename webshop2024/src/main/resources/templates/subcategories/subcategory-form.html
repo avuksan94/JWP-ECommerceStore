@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Product Info</title>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link rel="stylesheet" th:href="@{/css/shopProducts.css}">
+    <link rel="stylesheet" th:href="@{/css/addCategory.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+</head>
+<body class="d-flex flex-column bg-light">
+<!-- Navigation-->
+<!-- Must have placeholder present on every page(jQuery needs to load before bootstrap) -->
+<div id="navbar-placeholder"></div>
+<script>
+    $(document).ready(function() {
+        $("#navbar-placeholder").load("/shared/navbarAdmin.html");
+    });
+</script>
+<!-- Section-->
+<section class="py-5 bg-light">
+    <div class="container px-4 px-lg-5 mt-5">
+        <p class="h4 text-black mb-4">Category Info</p>
+
+        <form action="#" th:action="@{/webShop/admin/subcategories/save}"
+              th:object="${subcategory}" method = "POST">
+
+            <input type="hidden" th:field="*{subcategoryId}">
+
+            <p th:errors="*{name}"></p>
+            <input type="text" th:field="*{name}"
+                   class="form-control mb-4 w-25" placeholder="Name">
+
+            <p th:errors="*{category.categoryId}"></p>
+            <select th:field="*{category.categoryId}" class="form-control mb-4 w-25">
+                <option value="-1">Select Subcategory</option>
+                <option th:each="category : ${categories}" th:value="${category.categoryId}" th:text="${category.name}"></option>
+            </select>
+
+            <button type="submit" class="btn custom-add-button col-2">Save </button>
+
+            <br>
+        </form>
+        <a th:href="@{/webShop/admin/categories/list}" class="btn custom-add-button col-2">Back to categories</a>
+    </div>
+
+</section>
+<!-- Footer-->
+<footer class="py-5 custom-gradient mt-auto">
+    <div class="container"><p class="m-0 text-center text-white">avuksan &copy; JWP 2024</p></div>
+</footer>
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+</body>
+</html>

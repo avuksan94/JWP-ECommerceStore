@@ -1,0 +1,41 @@
+.gradient-custom-3 {
+    background: linear-gradient(to right, #6a11cb, #2575fc);
+}
+
+.gradient-custom-4 {
+    background-color: #ff9800 !important;
+}
+
+.custom-gradient {
+    background-color: #ff9800 !important;
+}
+
+.custom-gradient-content{
+    background-color: #ffffff !important;
+}
+
+.custom-add-button{
+    background-color: #ff9800;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+.custom-add-button:hover {
+     background-color: #e65100;
+     color: #ffffff !important;
+}
+
+
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+

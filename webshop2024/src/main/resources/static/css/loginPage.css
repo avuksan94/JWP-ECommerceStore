@@ -1,0 +1,80 @@
+.gradient-custom-2 {
+    background: linear-gradient(to right, #6a11cb, #2575fc); /* Vibrant gradient from purple to blue */
+}
+
+@media (min-width: 768px) {
+    .gradient-form {
+        height: 100vh !important;
+    }
+}
+
+@media (min-width: 769px) {
+    .gradient-custom-2 {
+        border-top-right-radius: .3rem;
+        border-bottom-right-radius: .3rem;
+    }
+}
+
+.custom-gradient {
+    background: linear-gradient(to right, #6a11cb, #2575fc); /* Updated to vibrant gradient from purple to blue */
+}
+
+.create-new-btn {
+    background-color: #ff9800 !important; /* Updated to orange */
+    color: #ffffff; /* Ensuring text color is white for better readability */
+    padding: 10px 20px; /* Styling for padding */
+    border-radius: 8px; /* Rounded corners */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+    border: none; /* No border */
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+.create-new-btn:hover {
+     background-color: #e65100; /* Darker shade of orange on hover */
+     color: #ffffff !important;
+}
+
+.bi-search-icon {
+    color: #2575fc; /* Color matching the header gradient */
+}
+
+.tags-section-gradient {
+   background: linear-gradient(to bottom, #12c2e9, #ffffff); /* Light and inviting gradient for tags or sections */
+}
+
+.tags-cards-gradient {
+   background-color: #f0f0f0; /* Very light grey for card backgrounds */
+}
+
+.navbar-nav {
+   justify-content: center;
+}
+
+.scrollable-gallery {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.selected {
+    border: 4px solid #4CAF50;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.content-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+body {
+    background-color: #f7f7f7;
+}
+

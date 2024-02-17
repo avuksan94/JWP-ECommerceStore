@@ -1,0 +1,28 @@
+.product-img {
+            width: auto;
+            height: 150px;
+            object-fit: cover;
+            margin: auto;
+        }
+
+        .custom-add-button{
+        background-color: #ff9800;
+        color: #ffffff;
+        padding: 10px 20px;
+        border-radius: 8px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        border: none;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        }
+
+        .custom-add-button:hover {
+             background-color: #e65100;
+             color: #ffffff !important;
+        }
+
+        .bg-orange {
+            background-color: #e65100;
+        }

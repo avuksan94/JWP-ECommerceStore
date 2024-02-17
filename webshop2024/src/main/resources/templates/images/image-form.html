@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Image Info</title>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Bootstrap icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Core theme CSS (includes Bootstrap) -->
+    <link rel="stylesheet" th:href="@{/css/shopProducts.css}">
+    <link rel="stylesheet" th:href="@{/css/addImage.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- Vue.js -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+</head>
+<body class="d-flex flex-column bg-light">
+<div id="navbar-placeholder"></div>
+<script>
+    $(document).ready(function() {
+        $("#navbar-placeholder").load("/shared/navbarAdmin.html");
+    });
+</script>
+
+<section id="imageManagement" class="py-5 bg-light">
+    <div class="container px-4 px-lg-5 mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <p class="h4 text-black mb-4">Image Info</p>
+                <form action="#" th:action="@{/webShop/admin/images/save}"
+                      th:object="${image}" method="POST">
+                    <input type="hidden" th:field="*{imageId}">
+                    <p th:errors="*{imageUrl}"></p>
+                    <input type="text" th:field="*{imageUrl}"
+                           class="form-control mb-4 w-25" placeholder="Image URL" @input="setImageLink">
+                    <button type="submit" class="btn custom-add-button col-2">Save </button>
+                    <br>
+                    <a th:href="@{/webShop/admin/images/list}" class="btn custom-add-button col-2">Back to images</a>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <!-- Image preview using Vue.js -->
+                <img v-bind:src="imageLink" alt="Image preview" class="img-fluid"/>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="py-5 custom-gradient mt-auto">
+    <div class="container"><p class="m-0 text-center text-white">avuksan &copy; JWP 2024</p></div>
+</footer>
+<!-- Bootstrap core JS-->
+<script th:src="@{/js/imagesDisplay.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+</body>
+</html>
