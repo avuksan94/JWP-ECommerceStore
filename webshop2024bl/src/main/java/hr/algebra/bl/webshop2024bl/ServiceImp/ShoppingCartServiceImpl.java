@@ -46,6 +46,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
+    public Optional<ShoppingCart> findByUsername(String username) {
+        return shoppingCartRepo.findByUsername(username);
+    }
+
+    @Override
     public ShoppingCart save(ShoppingCart obj) {
         return shoppingCartRepo.save(obj);
     }

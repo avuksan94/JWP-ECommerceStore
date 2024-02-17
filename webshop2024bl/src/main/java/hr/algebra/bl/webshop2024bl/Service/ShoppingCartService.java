@@ -9,6 +9,7 @@ public interface ShoppingCartService {
     List<ShoppingCart> findAll();
     ShoppingCart findById(long id);
     Optional<ShoppingCart> findBySessionId(String sessionId);
+    Optional<ShoppingCart> findByUsername(String username);
     ShoppingCart save(ShoppingCart obj);
     void deleteById(long id);
     void addItemToCart(String identifier, Long productId, Integer quantity, boolean isRegisteredUser);

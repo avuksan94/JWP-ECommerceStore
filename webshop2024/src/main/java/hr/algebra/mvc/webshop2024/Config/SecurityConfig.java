@@ -41,11 +41,45 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/webShop/security/showFormCreateUser").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/webShop/security/saveUser").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/webShop/auth/status").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/webShop/testing/list").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.GET, "/error").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/webShop/navbar").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/webShop/products/showSelectedProduct").permitAll()
 
-                                //ADMIN PAGES
-                                //.requestMatchers(HttpMethod.GET, "/webShop/loginUser").permitAll()
+                                //ADMIN PAGES - PRODUCTS
+                                .requestMatchers(HttpMethod.GET, "/webShop/admin/products/list").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/webShop/admin/products/showFormForAddProduct").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/webShop/admin/products/showFormForUpdateProduct").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/webShop/admin/products/save").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/webShop/admin/products/delete").hasRole("ADMIN")
+
+                                //ADMIN PAGES - CATEGORY
+                                .requestMatchers(HttpMethod.GET, "/webShop/admin/categories/list").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/webShop/admin/categories/showFormForAddCategory").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/webShop/admin/categories/showFormForUpdateCategory").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/webShop/admin/categories/save").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/webShop/admin/categories/delete").hasRole("ADMIN")
+
+                                //ADMIN PAGES - SUBCATEGORY
+                                .requestMatchers(HttpMethod.GET, "/webShop/admin/subcategories/list").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/webShop/admin/subcategories/showFormForAddSubcategory").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/webShop/admin/subcategories/showFormForUpdateSubcategory").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/webShop/admin/subcategories/save").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/webShop/admin/subcategories/delete").hasRole("ADMIN")
+
+                                //ADMIN PAGES - IMAGES
+                                .requestMatchers(HttpMethod.GET, "/webShop/admin/images/list").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/webShop/admin/images/showFormForAddImage").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/webShop/admin/images/showFormForUpdateImage").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/webShop/admin/images/save").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/webShop/admin/images/delete").hasRole("ADMIN")
+
+                                //Shopping controller
+                                .requestMatchers(HttpMethod.POST, "/webShop/shopping/removeFromCartCart").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/webShop/shopping/addToCart").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/webShop/shopping/changeQuantity").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/webShop/shopping/cartItemCount").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/webShop/shopping/cart").permitAll()
+
+                                .requestMatchers(HttpMethod.GET, "/error").permitAll()
                 )
                 .formLogin(form ->
                         form

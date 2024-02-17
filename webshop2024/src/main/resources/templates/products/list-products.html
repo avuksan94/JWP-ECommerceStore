@@ -23,34 +23,35 @@
 <body class="d-flex flex-column">
 <!-- Navigation-->
 <!-- Must have placeholder present on every page(jQuery needs to load before bootstrap) -->
-<div id="navbar-placeholder"></div>
+<div th:replace="${navbarPath}"></div>
 <script>
     $(document).ready(function(){
-        $("#navbar-placeholder").load("/shared/navbar.html", function() {
-        // Fetching the cart item count after the navbar has been loaded
-            updateCartItemCount();
+     // Fetching the cart item count after the navbar has been loaded
+     updateCartItemCount();
+
+     // Function to update cart item count
+     function updateCartItemCount() {
+         $.get('/webShop/shopping/cartItemCount', function(data) {
+             $('#cart-item-count').text(data);
+         }).fail(function() {
+             console.log('Failed to fetch cart item count');
          });
+     }
 
-         function updateCartItemCount() {
-            $.get('/webShop/shopping/cartItemCount', function(data) {
-                $('#cart-item-count').text(data);
-            }).fail(function() {
-                console.log('Failed to fetch cart item count');
-            });
-        }
-
-        $('.custom-add-button').click(function(event) {
-        event.preventDefault();
-        const productId = $(this).data('product-id');
-        $.post('/webShop/shopping/addToCart', { productId: productId, quantity: 1 }, function(response) {
-            alert('Item added to cart');
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-            console.log("Request failed: " + textStatus + ", " + errorThrown);
-            alert("Failed to add item to cart: " + jqXHR.responseText);
-        });
-    });
-
-    });
+     // Add to cart action
+     $('.custom-add-button').click(function(event) {
+         event.preventDefault();
+         const productId = $(this).data('product-id');
+         $.post('/webShop/shopping/addToCart', { productId: productId, quantity: 1 }, function(response) {
+             alert('Item added to cart');
+             // Optionally, update cart item count here as well
+             updateCartItemCount();
+         }).fail(function(jqXHR, textStatus, errorThrown) {
+             console.log("Request failed: " + textStatus + ", " + errorThrown);
+             alert("Failed to add item to cart: " + jqXHR.responseText);
+         });
+     });
+ });
 </script>
 
 <!-- Section-->

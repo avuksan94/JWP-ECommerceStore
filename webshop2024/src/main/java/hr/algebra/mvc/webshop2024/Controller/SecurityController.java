@@ -88,6 +88,7 @@ public class SecurityController {
         }
 
         userService.createShopperUser(user.getUsername(),user.getPassword(),user.getEmail());
+        //userService.createAdminUser(user.getUsername(),user.getPassword(),user.getEmail());
 
         return "redirect:/webShop/security/loginUser";
     }

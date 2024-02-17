@@ -73,7 +73,6 @@ public class CategoryController {
 
         theModel.addAttribute("category", dtoCategory);
 
-        //send over to our form
         return "categories/category-form";
     }
 

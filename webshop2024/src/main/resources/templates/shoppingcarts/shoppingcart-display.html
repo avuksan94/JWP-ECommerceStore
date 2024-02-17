@@ -22,10 +22,8 @@
 
     <script>
         $(document).ready(function(){
-            $("#navbar-placeholder").load("/shared/navbar.html", function() {
-        // Fetching the cart item count after the navbar has been loaded
+          // Fetching the cart item count after the navbar has been loaded
             updateCartItemCount();
-         });
 
          function updateCartItemCount() {
                 $.get('/webShop/shopping/cartItemCount', function(data) {
@@ -56,7 +54,7 @@
     </script>
 </head>
 <body class="d-flex flex-column">
-<div id="navbar-placeholder"></div>
+<div th:replace="${navbarPath}"></div>
 <section class="py-5 bg-light">
     <div class="container">
         <h2>Your shopping cart</h2>

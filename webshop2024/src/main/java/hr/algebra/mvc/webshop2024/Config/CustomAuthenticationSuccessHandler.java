@@ -23,7 +23,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         for (GrantedAuthority grantedAuthority : authorities) {
             if (grantedAuthority.getAuthority().equals("ROLE_ADMIN")) {
-                redirectStrategy.sendRedirect(request, response, "/webShop/admin/products/list/");
+                redirectStrategy.sendRedirect(request, response, "/webShop/admin/products/list");
                 System.out.println("ADMIN!");
                 return;
             } else if (grantedAuthority.getAuthority().equals("ROLE_SHOPPER")) {
