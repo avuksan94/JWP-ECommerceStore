@@ -5,6 +5,7 @@ import hr.algebra.dal.webshop2024dal.Entity.Category;
 import hr.algebra.dal.webshop2024dal.Entity.Image;
 import hr.algebra.dal.webshop2024dal.Repository.ImageRepository;
 import hr.algebra.utils.CustomExceptions.CustomNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,11 +35,13 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    @Transactional
     public Image save(Image obj) {
         return imageRepo.save(obj);
     }
 
     @Override
+    @Transactional
     public void deleteById(long id) {
         Optional<Image> checkIfExists = imageRepo.findById(id);
         if (checkIfExists.isEmpty()){

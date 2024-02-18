@@ -6,6 +6,7 @@ import hr.algebra.dal.webshop2024dal.Entity.ShoppingCart;
 import hr.algebra.dal.webshop2024dal.Entity.Subcategory;
 import hr.algebra.dal.webshop2024dal.Repository.SubcategoryRepository;
 import hr.algebra.utils.CustomExceptions.CustomNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,11 +37,13 @@ public class SubcategoryServiceImpl implements SubcategoryService {
     }
 
     @Override
+    @Transactional
     public Subcategory save(Subcategory obj) {
         return subcategoryRepo.save(obj);
     }
 
     @Override
+    @Transactional
     public void deleteById(long id) {
         Optional<Subcategory> checkIfExists = subcategoryRepo.findById(id);
         if (checkIfExists.isEmpty()){

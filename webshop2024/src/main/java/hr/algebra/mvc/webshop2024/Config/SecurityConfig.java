@@ -73,6 +73,9 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/webShop/admin/images/save").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/webShop/admin/images/delete").hasRole("ADMIN")
 
+                                //ADMIN PAGES - ORDERS
+                                .requestMatchers(HttpMethod.GET, "/webShop/admin/order/allOrders").hasRole("ADMIN")
+
                                 //SHOPPER - ORDERS
                                 .requestMatchers(HttpMethod.POST, "/webShop/order/finalize").hasRole("SHOPPER")
                                 .requestMatchers(HttpMethod.GET, "/webShop/order/forShopper").hasRole("SHOPPER")

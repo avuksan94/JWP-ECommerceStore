@@ -7,6 +7,7 @@ import hr.algebra.dal.webshop2024dal.Entity.OrderItem;
 import hr.algebra.dal.webshop2024dal.Entity.Product;
 import hr.algebra.dal.webshop2024dal.Repository.OrderItemRepository;
 import hr.algebra.utils.CustomExceptions.CustomNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,6 +47,7 @@ public class OrderItemServiceImpl implements OrderItemService {
     }
 
     @Override
+    @Transactional
     public OrderItem save(OrderItem obj) {
         return orderItemRepo.save(obj);
     }

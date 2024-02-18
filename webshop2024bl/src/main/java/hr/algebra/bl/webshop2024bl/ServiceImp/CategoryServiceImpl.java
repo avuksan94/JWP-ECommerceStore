@@ -5,6 +5,7 @@ import hr.algebra.dal.webshop2024dal.Entity.Authority;
 import hr.algebra.dal.webshop2024dal.Entity.Category;
 import hr.algebra.dal.webshop2024dal.Repository.CategoryRepository;
 import hr.algebra.utils.CustomExceptions.CustomNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,11 +36,13 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public Category save(Category obj) {
         return categoryRepo.save(obj);
     }
 
     @Override
+    @Transactional
     public void deleteById(long id) {
         Optional<Category> checkIfExists = categoryRepo.findById(id);
         if (checkIfExists.isEmpty()){

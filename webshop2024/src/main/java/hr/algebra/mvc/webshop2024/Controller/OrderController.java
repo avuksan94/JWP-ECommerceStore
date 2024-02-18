@@ -139,4 +139,47 @@ public class OrderController {
 
         return "orders/list-orders";
     }
+
+    @GetMapping("/admin/order/allOrders")
+    public String viewAllOrders(Model model) {
+        List<Order> orders = orderService.findAll();
+
+        List<OrderVM> userOrders = new ArrayList<>();
+
+        for (Order order : orders) {
+            List<OrderItem> realOrderItems = orderItemService.findByOrder(order);
+            List<OrderItemVM> orderItems = new ArrayList<>();
+            List<ProductImage> productImages = productImageService.findAll();
+
+            for (OrderItem realOrderItem : realOrderItems) {
+                OrderItemVM orderItemVM = new OrderItemVM();
+                String imageLink = "https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png";
+
+                for (ProductImage image : productImages) {
+                    if (Objects.equals(image.getProduct().getProductId(), realOrderItem.getProduct().getProductId())) {
+                        imageLink = image.getImage().getImageUrl();
+                        break;
+                    }
+                }
+
+                orderItemVM.setOrderItemId(realOrderItem.getOrderItemId());
+                orderItemVM.setOrderId(realOrderItem.getOrder().getOrderId());
+                orderItemVM.setProductId(realOrderItem.getProduct().getProductId());
+                orderItemVM.setProductName(realOrderItem.getProduct().getName());
+                orderItemVM.setProductPrice(realOrderItem.getProduct().getPrice());
+                orderItemVM.setQuantity(realOrderItem.getQuantity());
+                orderItemVM.setImageUrls(imageLink);
+
+                orderItems.add(orderItemVM);
+            }
+
+            OrderVM userOrderVM = new OrderVM();
+            userOrderVM.setOrder(order);
+            userOrderVM.setOrderItems(orderItems);
+            userOrders.add(userOrderVM);
+        }
+        model.addAttribute("userOrders", userOrders);
+
+        return "orders/list-orders-admin";
+    }
 }

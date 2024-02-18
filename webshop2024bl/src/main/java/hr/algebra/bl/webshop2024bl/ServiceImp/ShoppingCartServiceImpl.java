@@ -8,6 +8,7 @@ import hr.algebra.dal.webshop2024dal.Repository.CartItemRepository;
 import hr.algebra.dal.webshop2024dal.Repository.ProductRepository;
 import hr.algebra.dal.webshop2024dal.Repository.ShoppingCartRepository;
 import hr.algebra.utils.CustomExceptions.CustomNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -51,11 +52,13 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
+    @Transactional
     public ShoppingCart save(ShoppingCart obj) {
         return shoppingCartRepo.save(obj);
     }
 
     @Override
+    @Transactional
     public void deleteById(long id) {
         Optional<ShoppingCart> checkIfExists = shoppingCartRepo.findById(id);
         if (checkIfExists.isEmpty()){
@@ -65,6 +68,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
+    @Transactional
     public void addItemToCart(String identifier, Long productId, Integer quantity, boolean isRegisteredUser) {
         ShoppingCart cart = findOrCreateCart(identifier, isRegisteredUser);
         Product product = productRepo.findById(productId)
@@ -83,6 +87,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
+    @Transactional
     public void removeItemFromCart(String identifier, Long productId, Integer quantity, boolean isRegisteredUser) {
         ShoppingCart cart = findOrCreateCart(identifier, isRegisteredUser);
         Product product = productRepo.findById(productId)
@@ -106,6 +111,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
+    @Transactional
     public ShoppingCart findOrCreateCart(String sessionIdOrUsername, boolean isRegisteredUser) {
         if (isRegisteredUser) {
             return shoppingCartRepo.findByUsername(sessionIdOrUsername)
@@ -117,6 +123,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
+    @Transactional
     public void linkCartToUser(String sessionId, String username) {
         ShoppingCart cart = shoppingCartRepo.findBySessionId(sessionId)
                 .orElse(new ShoppingCart());

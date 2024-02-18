@@ -4,8 +4,10 @@ import hr.algebra.bl.webshop2024bl.Service.AuthorityService;
 import hr.algebra.dal.webshop2024dal.Entity.Authority;
 import hr.algebra.dal.webshop2024dal.Repository.AuthorityRepository;
 import hr.algebra.utils.CustomExceptions.CustomNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.beans.Transient;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,11 +37,13 @@ public class AuthorityServiceImpl implements AuthorityService {
     }
 
     @Override
+    @Transactional
     public Authority save(Authority authority) {
         return authRepo.save(authority);
     }
 
     @Override
+    @Transactional
     public void deleteById(long id) {
         Optional<Authority> checkIfExists = authRepo.findById(id);
         if (checkIfExists.isEmpty()){

@@ -6,6 +6,7 @@ import hr.algebra.dal.webshop2024dal.Repository.OrderItemRepository;
 import hr.algebra.dal.webshop2024dal.Repository.OrderRepository;
 import hr.algebra.dal.webshop2024dal.Repository.ProductRepository;
 import hr.algebra.utils.CustomExceptions.CustomNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -52,6 +53,7 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
+    @Transactional
     public Order findOrCreateOrder(String username) {
         Date now = new Date();
             return orderRepo.findByUsername(username)
@@ -60,6 +62,7 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
+    @Transactional
     public void addItemToOrder(String username, Long productId, Integer quantity, BigDecimal price) {
         Order order = findOrCreateOrder(username);
         Product product = productRepo.findById(productId)
@@ -79,6 +82,7 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
+    @Transactional
     public void removeItemFromOrder(String username, Long productId, Integer quantity, BigDecimal price) {
         Order order = findOrCreateOrder(username);
         Product product = productRepo.findById(productId)
@@ -102,6 +106,7 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
+    @Transactional
     public void linkOrderToUser(String username) {
         Order order = orderRepo.findByUsername(username)
                 .orElse(new Order());
@@ -110,11 +115,13 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
+    @Transactional
     public Order save(Order obj) {
         return orderRepo.save(obj);
     }
 
     @Override
+    @Transactional
     public void deleteById(long id) {
         Optional<Order> checkIfExists = orderRepo.findById(id);
         if (checkIfExists.isEmpty()){

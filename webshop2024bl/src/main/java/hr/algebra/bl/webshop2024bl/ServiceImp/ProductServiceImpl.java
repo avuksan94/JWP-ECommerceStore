@@ -5,6 +5,7 @@ import hr.algebra.dal.webshop2024dal.Entity.Order;
 import hr.algebra.dal.webshop2024dal.Entity.Product;
 import hr.algebra.dal.webshop2024dal.Repository.ProductRepository;
 import hr.algebra.utils.CustomExceptions.CustomNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,11 +35,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public Product save(Product obj) {
         return productRepo.save(obj);
     }
 
     @Override
+    @Transactional
     public void deleteById(long id) {
         Optional<Product> checkIfExists = productRepo.findById(id);
         if (checkIfExists.isEmpty()){

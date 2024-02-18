@@ -8,6 +8,7 @@ import hr.algebra.dal.webshop2024dal.Enum.Role;
 import hr.algebra.dal.webshop2024dal.Repository.AuthorityRepository;
 import hr.algebra.dal.webshop2024dal.Repository.UserRepository;
 import hr.algebra.utils.CustomExceptions.CustomNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -53,11 +54,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public User save(User user) {
         return userRepo.save(user);
     }
 
     @Override
+    @Transactional
     public void deleteByUsername(String username) {
         userRepo.deleteByUsername(username);
     }
@@ -68,6 +71,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void createAdminUser(String username, String rawPassword,String email) {
         User user = new User();
         user.setUsername(username);
@@ -83,6 +87,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void createShopperUser(String username, String rawPassword,String email) {
         User user = new User();
         user.setUsername(username);

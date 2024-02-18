@@ -7,6 +7,7 @@ import hr.algebra.dal.webshop2024dal.Entity.Product;
 import hr.algebra.dal.webshop2024dal.Entity.ShoppingCart;
 import hr.algebra.dal.webshop2024dal.Repository.CartItemRepository;
 import hr.algebra.utils.CustomExceptions.CustomNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,11 +48,13 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
+    @Transactional
     public CartItem save(CartItem obj) {
         return cartItemRepo.save(obj);
     }
 
     @Override
+    @Transactional
     public void deleteById(long id) {
         Optional<CartItem> checkIfExists = cartItemRepo.findById(id);
         if (checkIfExists.isEmpty()){
