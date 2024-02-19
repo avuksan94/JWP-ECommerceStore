@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import hr.algebra.dal.webshop2024dal.Entity.Image;
 
 @RestController
-@RequestMapping("/webshopApi")
+@RequestMapping("/webShopApi")
 public class RestTestController {
     @Autowired
     private final ImageService imageService;
