@@ -22,7 +22,18 @@ public class Subcategory {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    public Subcategory(Long subcategoryId, String name) {
+        this.subcategoryId = subcategoryId;
+        this.name = name;
+    }
+
     public Subcategory(String name, Category category) {
+        this.name = name;
+        this.category = category;
+    }
+
+    public Subcategory(Long subcategoryId, String name, Category category) {
+        this.subcategoryId = subcategoryId;
         this.name = name;
         this.category = category;
     }

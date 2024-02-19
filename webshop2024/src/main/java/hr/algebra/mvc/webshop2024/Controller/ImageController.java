@@ -5,6 +5,7 @@ import hr.algebra.dal.webshop2024dal.Entity.Category;
 import hr.algebra.dal.webshop2024dal.Entity.Image;
 import hr.algebra.mvc.webshop2024.DTO.DTOCategory;
 import hr.algebra.mvc.webshop2024.DTO.DTOImage;
+import hr.algebra.mvc.webshop2024.Mapper.ImageMapper;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,9 +22,11 @@ import java.util.concurrent.ExecutionException;
 @RequestMapping("webShop")
 public class ImageController {
     private final ImageService imageService;
+    private final ImageMapper imageMapper;
 
-    public ImageController(ImageService imageService) {
+    public ImageController(ImageService imageService, ImageMapper imageMapper) {
         this.imageService = imageService;
+        this.imageMapper = imageMapper;
     }
 
     @GetMapping("admin/images/list")
@@ -36,11 +39,7 @@ public class ImageController {
             List<Image> images = imageFuture.join();
             List<DTOImage> realImages = new ArrayList<>();
             for (var image : images) {
-                DTOImage img = new DTOImage();
-                img.setImageId(image.getImageId());
-                img.setImageUrl(image.getImageUrl());
-
-                realImages.add(img);
+                realImages.add(imageMapper.ImageToDTOImage(image));
             }
             return realImages;
         });
@@ -62,15 +61,15 @@ public class ImageController {
 
     @GetMapping("admin/images/showFormForUpdateImage")
     public String showFormForUpdateImage(@RequestParam("imageId") int theId, Model theModel){
-        Image image = imageService.findById(theId);
+        CompletableFuture<Image> imageFuture = CompletableFuture.supplyAsync(() -> imageService.findById(theId));
 
-        DTOImage dtoImage = new DTOImage();
-        dtoImage.setImageId(image.getImageId());
-        dtoImage.setImageUrl(image.getImageUrl());
-
-        theModel.addAttribute("image", dtoImage);
-
-        //send over to our form
+        Image image;
+        try {
+            image = imageFuture.get();
+            theModel.addAttribute("image", imageMapper.ImageToDTOImage(image));
+        } catch (InterruptedException | ExecutionException e) {
+            return "error";
+        }
         return "images/image-form";
     }
 
@@ -80,29 +79,29 @@ public class ImageController {
             return "images/image-form";
         }
 
-        List<Image> allDBImages = imageService.findAll();
+        CompletableFuture<List<Image>> allDBImagesFuture = CompletableFuture.supplyAsync(imageService::findAll);
 
-        Optional<Image> result = allDBImages.stream()
-                .filter(imageRes -> image.getImageUrl().equals(imageRes.getImageUrl()))
-                .findFirst();
+        try {
+            Optional<Image> result = allDBImagesFuture.thenApply(allDBImages -> allDBImages.stream()
+                    .filter(img -> image.getImageUrl().equals(img.getImageUrl()))
+                    .findFirst()).get();
 
-        if(result.isPresent()){
-            model.addAttribute("errorMessage", "Image with that URL already exists!");
-            return "images/image-form";
+            if (result.isPresent()) {
+                model.addAttribute("errorMessage", "Image with that URL already exists!");
+                return "images/image-form";
+            } else {
+                CompletableFuture.runAsync(() -> imageService.save(imageMapper.DTOImageToImage(image)));
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            return "error";
         }
-
-        Image imageToSave = new Image();
-        imageToSave.setImageId(image.getImageId());
-        imageToSave.setImageUrl(image.getImageUrl());
-        imageService.save(imageToSave);
 
         return "redirect:/webShop/admin/images/list";
     }
 
     @GetMapping("admin/images/delete")
     public String delete(@RequestParam("imageId") int theId){
-        imageService.deleteById(theId);
-
+        CompletableFuture.runAsync(() -> imageService.deleteById(theId)).join();
         return "redirect:/webShop/admin/images/list";
     }
 

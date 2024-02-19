@@ -3,6 +3,8 @@ package hr.algebra.dal.webshop2024dal.Entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.math.BigDecimal;
 
@@ -21,7 +23,7 @@ public class Order {
     private String username;
 
     @Column(name = "purchase_date", nullable = false)
-    private Date purchaseDate;
+    private LocalDateTime purchaseDate;
 
     @Column(name = "total_amount", nullable = false)
     private BigDecimal totalAmount;
@@ -29,7 +31,7 @@ public class Order {
     @Column(name = "payment_method", nullable = false)
     private String paymentMethod;
 
-    public Order(String username, Date purchaseDate, BigDecimal totalAmount, String paymentMethod) {
+    public Order(String username, LocalDateTime purchaseDate, BigDecimal totalAmount, String paymentMethod) {
         this.username = username;
         this.purchaseDate = purchaseDate;
         this.totalAmount = totalAmount;

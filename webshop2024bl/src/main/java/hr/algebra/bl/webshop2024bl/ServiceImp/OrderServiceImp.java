@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -53,11 +54,15 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
+    public List<Order> findByUsernameAndPurchaseDateBetween(String username, LocalDateTime startDate, LocalDateTime endDate) {
+        return orderRepo.findByUsernameAndPurchaseDateBetween(username,startDate,endDate);
+    }
+
+    @Override
     @Transactional
     public Order findOrCreateOrder(String username) {
-        Date now = new Date();
             return orderRepo.findByUsername(username)
-                    .orElseGet(() -> orderRepo.save(new Order(username, now,new BigDecimal("0.00"),"N/A")));
+                    .orElseGet(() -> orderRepo.save(new Order(username, LocalDateTime.now(),new BigDecimal("0.00"),"N/A")));
 
     }
 

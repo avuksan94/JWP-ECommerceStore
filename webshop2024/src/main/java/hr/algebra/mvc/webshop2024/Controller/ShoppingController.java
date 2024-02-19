@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @Controller
 @RequestMapping("webShop")
@@ -34,12 +35,13 @@ public class ShoppingController {
     public String addItemToCart(@RequestParam("productId") Long productId,
                                 @RequestParam("quantity") Integer quantity,
                                 HttpServletRequest request, Principal principal) {
-        String sessionId = request.getSession().getId();
-        if (principal != null){
-            shoppingCartService.addItemToCart(principal.getName(), productId, quantity, true);
-        }else {
-            shoppingCartService.addItemToCart(sessionId, productId, quantity, false);
-        }
+        String identifier = principal != null ? principal.getName() : request.getSession().getId();
+        boolean isUserRegistered = principal != null;
+
+        CompletableFuture<Void> addItemFuture = CompletableFuture.runAsync(() ->
+                shoppingCartService.addItemToCart(identifier, productId, quantity, isUserRegistered));
+        addItemFuture.join();
+
         return "redirect:/webShop/products/list";
     }
 
@@ -47,12 +49,13 @@ public class ShoppingController {
     public String removeItemFromCart(@RequestParam("productId") Long productId,
                                 @RequestParam("quantity") Integer quantity,
                                 HttpServletRequest request,Principal principal) {
-        String sessionId = request.getSession().getId();
-        if (principal != null){
-            shoppingCartService.removeItemFromCart(principal.getName(), productId, quantity, true);
-        }else {
-            shoppingCartService.removeItemFromCart(sessionId, productId, quantity, false);
-        }
+        String identifier = principal != null ? principal.getName() : request.getSession().getId();
+        boolean isUserRegistered = principal != null;
+
+        CompletableFuture<Void> removeItemFuture = CompletableFuture.runAsync(() ->
+                shoppingCartService.removeItemFromCart(identifier, productId, quantity, isUserRegistered));
+        removeItemFuture.join();
+
         return "redirect:/webShop/products/list";
     }
 
@@ -60,21 +63,18 @@ public class ShoppingController {
     public String changeQuantityInCart(@RequestParam("productId") Long productId,
                                        @RequestParam("quantity") Integer quantity,
                                        HttpServletRequest request,Principal principal) {
-        String sessionId = request.getSession().getId();
+        String identifier = principal != null ? principal.getName() : request.getSession().getId();
+        boolean isUserRegistered = principal != null;
 
-        if (quantity > 0) {
-            if (principal != null){
-                shoppingCartService.addItemToCart(principal.getName(), productId, quantity, true);
-            }else {
-                shoppingCartService.addItemToCart(sessionId, productId, quantity, false);
+        CompletableFuture<Void> changeQuantityFuture = CompletableFuture.runAsync(() -> {
+            if (quantity > 0) {
+                shoppingCartService.addItemToCart(identifier, productId, quantity, isUserRegistered);
+            } else if (quantity < 0) {
+                shoppingCartService.removeItemFromCart(identifier, productId, Math.abs(quantity), isUserRegistered);
             }
-        } else if (quantity < 0) {
-            if (principal != null){
-                shoppingCartService.removeItemFromCart(principal.getName(), productId, Math.abs(quantity), true);
-            }else {
-                shoppingCartService.removeItemFromCart(sessionId, productId, Math.abs(quantity), false);
-            }
-        }
+        });
+        changeQuantityFuture.join();
+
         return "redirect:/webShop/shopping/cart";
     }
 
@@ -91,48 +91,53 @@ public class ShoppingController {
 
     @GetMapping("/shopping/cart")
     public String viewShoppingCart(Model model, HttpServletRequest request,Principal principal) {
-        String sessionId = request.getSession().getId();
+        String identifier = principal != null ? principal.getName() : request.getSession().getId();
+        boolean isUserRegistered = principal != null;
 
-        Optional<ShoppingCart> shoppingCart = Optional.of(new ShoppingCart());
+        CompletableFuture<Optional<ShoppingCart>> shoppingCartFuture = isUserRegistered
+                ? CompletableFuture.supplyAsync(() -> shoppingCartService.findByUsername(identifier))
+                : CompletableFuture.supplyAsync(() -> shoppingCartService.findBySessionId(identifier));
 
-        if (principal !=  null){
-            shoppingCart = shoppingCartService.findByUsername(principal.getName());
-        } else  {
-            shoppingCart = shoppingCartService.findBySessionId(sessionId);
-        }
+        CompletableFuture<List<ProductImage>> productImagesFuture = CompletableFuture.supplyAsync(() ->
+                productImageService.findAll());
 
-        if (shoppingCart.isEmpty()) {
-            return "redirect:/webShop/products/list";
-        }
+        shoppingCartFuture.thenAcceptAsync(shoppingCart -> {
+            if (shoppingCart.isPresent()) {
+                List<CartItem> realCartItems = cartItemService.findByShoppingCart(shoppingCart.get());
+                List<CartItemVM> cartItems = new ArrayList<>();
 
-        List<CartItem> realCartItems = cartItemService.findByShoppingCart(shoppingCart.get());
-        List<CartItemVM> cartItems = new ArrayList<>();
-        List<ProductImage> productImages = productImageService.findAll();
+                // Synchronously wait for product images to ensure they are available for processing cart items.
+                List<ProductImage> productImages = productImagesFuture.join();
 
-        for (var realCartItem : realCartItems) {
-            CartItemVM cartItem = new CartItemVM();
-            String imageLink = "https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png";
+                for (CartItem realCartItem : realCartItems) {
+                    String imageLink = productImages.stream()
+                            .filter(image -> Objects.equals(image.getProduct().getProductId(), realCartItem.getProduct().getProductId()))
+                            .findFirst()
+                            .map(image -> image.getImage().getImageUrl())
+                            .orElse("https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png");
 
-            for (var image : productImages) {
-                if (Objects.equals(image.getProduct().getProductId(), realCartItem.getProduct().getProductId())) {
-                    imageLink = image.getImage().getImageUrl();
-                    break;
+                    CartItemVM cartItemVM = new CartItemVM(
+                            realCartItem.getCartItemId(),
+                            realCartItem.getShoppingCart().getCartId(),
+                            realCartItem.getProduct().getProductId(),
+                            realCartItem.getProduct().getName(),
+                            realCartItem.getProduct().getPrice(),
+                            realCartItem.getQuantity(),
+                            imageLink);
+
+                    cartItems.add(cartItemVM);
                 }
+
+                model.addAttribute("cartItems", cartItems);
             }
+        }).join();
 
-            cartItem.setCartItemId(realCartItem.getCartItemId());
-            cartItem.setCartId(realCartItem.getShoppingCart().getCartId());
-            cartItem.setProductId(realCartItem.getProduct().getProductId());
-            cartItem.setProductName(realCartItem.getProduct().getName());
-            cartItem.setProductPrice(realCartItem.getProduct().getPrice());
-            cartItem.setQuantity(realCartItem.getQuantity());
-            cartItem.setImageUrls(imageLink);
-
-            cartItems.add(cartItem);
+        if (shoppingCartFuture.isCompletedExceptionally()) {
+            return "error";
         }
 
-        model.addAttribute("cartItems", cartItems);
-
-        return "shoppingcarts/shoppingcart-display";
+        return shoppingCartFuture.isDone() && shoppingCartFuture.join().isPresent()
+                ? "shoppingcarts/shoppingcart-display"
+                : "redirect:/webShop/products/list";
     }
 }

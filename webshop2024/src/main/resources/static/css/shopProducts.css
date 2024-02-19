@@ -28,6 +28,24 @@
      color: #ffffff !important;
 }
 
+.custom-addQuantity-button{
+    background-color: #ff9800;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+.custom-addQuantity-button:hover {
+     background-color: #6a11cb;
+     color: #ffffff !important;
+}
+
 .bi-search-icon {
     color: #2575fc;
 }

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Product Info</title>
+    <title>Create Subcategory</title>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Favicon-->
@@ -32,7 +32,7 @@
 <!-- Section-->
 <section class="py-5 bg-light">
     <div class="container px-4 px-lg-5 mt-5">
-        <p class="h4 text-black mb-4">Category Info</p>
+        <p class="h4 text-black mb-4">Subcategory Info</p>
 
         <form action="#" th:action="@{/webShop/admin/subcategories/save}"
               th:object="${subcategory}" method = "POST">
@@ -45,7 +45,7 @@
 
             <p th:errors="*{category.categoryId}"></p>
             <select th:field="*{category.categoryId}" class="form-control mb-4 w-25">
-                <option value="-1">Select Subcategory</option>
+                <option value="-1">Select Category</option>
                 <option th:each="category : ${categories}" th:value="${category.categoryId}" th:text="${category.name}"></option>
             </select>
 
@@ -53,7 +53,7 @@
 
             <br>
         </form>
-        <a th:href="@{/webShop/admin/categories/list}" class="btn custom-add-button col-2">Back to categories</a>
+        <a th:href="@{/webShop/admin/subcategories/list}" class="btn custom-add-button col-2">Back to subcategories</a>
     </div>
 
 </section>

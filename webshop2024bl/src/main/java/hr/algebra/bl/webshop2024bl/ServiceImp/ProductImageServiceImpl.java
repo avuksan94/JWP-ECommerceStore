@@ -35,6 +35,11 @@ public class ProductImageServiceImpl implements ProductImageService {
     }
 
     @Override
+    public List<ProductImage> findByProduct_ProductId(Long productId) {
+        return productImageRepo.findByProduct_ProductId(productId);
+    }
+
+    @Override
     @Transactional
     public ProductImage save(ProductImage obj) {
         return productImageRepo.save(obj);

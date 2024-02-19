@@ -5,6 +5,7 @@ import hr.algebra.dal.webshop2024dal.Entity.Category;
 import hr.algebra.dal.webshop2024dal.Entity.Product;
 import hr.algebra.dal.webshop2024dal.Entity.ProductImage;
 import hr.algebra.mvc.webshop2024.DTO.DTOCategory;
+import hr.algebra.mvc.webshop2024.Mapper.CategoryMapper;
 import hr.algebra.mvc.webshop2024.ViewModel.ProductVM;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -23,9 +24,11 @@ import java.util.concurrent.ExecutionException;
 @RequestMapping("webShop")
 public class CategoryController {
     private final CategoryService categoryService;
+    private final CategoryMapper categoryMapper;
 
-    public CategoryController(CategoryService categoryService) {
+    public CategoryController(CategoryService categoryService, CategoryMapper categoryMapper) {
         this.categoryService = categoryService;
+        this.categoryMapper = categoryMapper;
     }
 
     @GetMapping("admin/categories/list")
@@ -56,7 +59,7 @@ public class CategoryController {
 
     @GetMapping("admin/categories/showFormForAddCategory")
     public String showFormForAddCategory(Model theModel){
-        //create the model attribute to bind form data
+        //I left this sync because the page would load to fast and the changes were not displayed on time
         DTOCategory category =  new DTOCategory();
         theModel.addAttribute("category", category);
 
@@ -65,47 +68,51 @@ public class CategoryController {
 
     @GetMapping("admin/categories/showFormForUpdateCategory")
     public String showFormForUpdateCategory(@RequestParam("categoryId") int theId, Model theModel){
-        Category category = categoryService.findById(theId);
+        CompletableFuture<Category> categoryFuture = CompletableFuture.supplyAsync(() -> categoryService.findById(theId));
 
-        DTOCategory dtoCategory = new DTOCategory();
-        dtoCategory.setCategoryId(category.getCategoryId());
-        dtoCategory.setName(category.getName());
-
-        theModel.addAttribute("category", dtoCategory);
+        Category category;
+        try {
+            category = categoryFuture.get(); // Blocking to wait for the future
+            theModel.addAttribute("category", categoryMapper.CategoryItemToDTOCategory(category));
+        } catch (InterruptedException | ExecutionException e) {
+            return "error";
+        }
 
         return "categories/category-form";
     }
 
     @PostMapping("admin/categories/save")
     public String saveCategory(@Valid @ModelAttribute("category") DTOCategory category, BindingResult bindingResult, Model model) {
-        // Check for validation errors
         if (bindingResult.hasErrors()) {
             return "categories/category-form";
         }
 
-        List<Category> allDBCategories = categoryService.findAll();
+        CompletableFuture<List<Category>> allDBCategoriesFuture = CompletableFuture.supplyAsync(categoryService::findAll);
 
-        Optional<Category> result = allDBCategories.stream()
-                .filter(categoryRes -> category.getName().equals(categoryRes.getName()))
-                .findFirst();
+        CompletableFuture<Optional<Category>> resultFuture = allDBCategoriesFuture.thenApply(allDBCategories ->
+                allDBCategories.stream()
+                        .filter(categoryRes -> category.getName().equals(categoryRes.getName()))
+                        .findFirst());
 
-        if(result.isPresent()){
-            model.addAttribute("errorMessage", "Category with that name already exists!");
-            return "categories/category-form";
+        try {
+            Optional<Category> result = resultFuture.get();
+            if (result.isPresent()) {
+                model.addAttribute("errorMessage", "Category with that name already exists!");
+                return "categories/category-form";
+            }
+
+            Category categoryTOSave = categoryMapper.DTOCategoryToCategory(category);
+            CompletableFuture.runAsync(() -> categoryService.save(categoryTOSave));
+        } catch (InterruptedException | ExecutionException e) {
+            return "error";
         }
-
-        Category categoryToSave = new Category();
-        categoryToSave.setCategoryId(category.getCategoryId());
-        categoryToSave.setName(category.getName());
-        categoryService.save(categoryToSave);
 
         return "redirect:/webShop/admin/categories/list";
     }
 
     @GetMapping("admin/categories/delete")
     public String delete(@RequestParam("categoryId") int theId){
-        categoryService.deleteById(theId);
-
+        CompletableFuture.runAsync(() -> categoryService.deleteById(theId));
         return "redirect:/webShop/admin/categories/list";
     }
 }

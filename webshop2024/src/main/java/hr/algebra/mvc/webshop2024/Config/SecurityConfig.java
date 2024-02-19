@@ -36,6 +36,7 @@ public class SecurityConfig {
                         configurer
                                 .requestMatchers(HttpMethod.GET, "/css/**", "/js/**", "/images/**", "shared/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/webShop/products/list").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/webShop/products/findByKeyword").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/webShop/security/loginUser").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/webShop/security/manualLogout").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/webShop/security/showFormCreateUser").permitAll()
@@ -49,6 +50,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/webShop/admin/products/list").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/webShop/admin/products/showFormForAddProduct").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/webShop/admin/products/showFormForUpdateProduct").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/webShop/admin/products/findByKeyword").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/webShop/admin/products/save").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/webShop/admin/products/delete").hasRole("ADMIN")
 
@@ -75,6 +77,10 @@ public class SecurityConfig {
 
                                 //ADMIN PAGES - ORDERS
                                 .requestMatchers(HttpMethod.GET, "/webShop/admin/order/allOrders").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/webShop/admin/order/orderByUsernameAndDates").hasRole("ADMIN")
+
+                                //ADMIN PAGES - CONNECTIONS
+                                .requestMatchers(HttpMethod.GET, "/webShop/admin/userConnections/list").hasRole("ADMIN")
 
                                 //SHOPPER - ORDERS
                                 .requestMatchers(HttpMethod.POST, "/webShop/order/finalize").hasRole("SHOPPER")

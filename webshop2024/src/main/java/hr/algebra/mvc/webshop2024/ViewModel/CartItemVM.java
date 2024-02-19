@@ -30,6 +30,16 @@ public class CartItemVM {
         this.selectedImageId = selectedImageId;
     }
 
+    public CartItemVM(Long cartItemId, Long cartId, Long productId, String productName, BigDecimal productPrice, Integer quantity, String imageUrls) {
+        this.cartItemId = cartItemId;
+        this.cartId = cartId;
+        this.productId = productId;
+        this.productName = productName;
+        this.productPrice = productPrice;
+        this.quantity = quantity;
+        this.imageUrls = imageUrls;
+    }
+
     public CartItemVM(Long cartItemId, Long cartId, Long productId, String productName, BigDecimal productPrice, Integer quantity, String imageUrls, Long selectedImageId) {
         this.cartItemId = cartItemId;
         this.cartId = cartId;

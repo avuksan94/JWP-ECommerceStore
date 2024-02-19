@@ -7,6 +7,7 @@ import hr.algebra.mvc.webshop2024.ViewModel.CartItemVM;
 import hr.algebra.mvc.webshop2024.ViewModel.OrderItemVM;
 import hr.algebra.mvc.webshop2024.ViewModel.OrderVM;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -71,7 +74,7 @@ public class OrderController {
         Order order = new Order();
         order.setUsername(principal.getName());
         order.setPaymentMethod(paymentMethod.name());
-        order.setPurchaseDate(new Date());
+        order.setPurchaseDate(LocalDateTime.now());
         order.setTotalAmount(totalAmount);
         return order;
     }
@@ -143,6 +146,53 @@ public class OrderController {
     @GetMapping("/admin/order/allOrders")
     public String viewAllOrders(Model model) {
         List<Order> orders = orderService.findAll();
+
+        List<OrderVM> userOrders = new ArrayList<>();
+
+        for (Order order : orders) {
+            List<OrderItem> realOrderItems = orderItemService.findByOrder(order);
+            List<OrderItemVM> orderItems = new ArrayList<>();
+            List<ProductImage> productImages = productImageService.findAll();
+
+            for (OrderItem realOrderItem : realOrderItems) {
+                OrderItemVM orderItemVM = new OrderItemVM();
+                String imageLink = "https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png";
+
+                for (ProductImage image : productImages) {
+                    if (Objects.equals(image.getProduct().getProductId(), realOrderItem.getProduct().getProductId())) {
+                        imageLink = image.getImage().getImageUrl();
+                        break;
+                    }
+                }
+
+                orderItemVM.setOrderItemId(realOrderItem.getOrderItemId());
+                orderItemVM.setOrderId(realOrderItem.getOrder().getOrderId());
+                orderItemVM.setProductId(realOrderItem.getProduct().getProductId());
+                orderItemVM.setProductName(realOrderItem.getProduct().getName());
+                orderItemVM.setProductPrice(realOrderItem.getProduct().getPrice());
+                orderItemVM.setQuantity(realOrderItem.getQuantity());
+                orderItemVM.setImageUrls(imageLink);
+
+                orderItems.add(orderItemVM);
+            }
+
+            OrderVM userOrderVM = new OrderVM();
+            userOrderVM.setOrder(order);
+            userOrderVM.setOrderItems(orderItems);
+            userOrders.add(userOrderVM);
+        }
+        model.addAttribute("userOrders", userOrders);
+
+        return "orders/list-orders-admin";
+    }
+
+    @GetMapping("/admin/order/orderByUsernameAndDates")
+    public String searchOrders(Model model, @RequestParam String username,
+                               @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                               @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        LocalDateTime dateTimeAtStart = startDate.atStartOfDay();
+        LocalDateTime dateTimeAtEnd = endDate.atStartOfDay();
+        List<Order> orders = orderService.findByUsernameAndPurchaseDateBetween(username,dateTimeAtStart,dateTimeAtEnd);
 
         List<OrderVM> userOrders = new ArrayList<>();
 

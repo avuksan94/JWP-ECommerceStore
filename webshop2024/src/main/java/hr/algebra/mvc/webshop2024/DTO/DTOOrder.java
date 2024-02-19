@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
@@ -16,11 +17,11 @@ import java.util.Date;
 public class DTOOrder {
     private Long orderId;
     private String username;
-    private Date purchaseDate;
+    private LocalDateTime purchaseDate;
     private BigDecimal totalAmount;
     private String paymentMethod;
 
-    public DTOOrder(String username, Date purchaseDate, BigDecimal totalAmount, String paymentMethod) {
+    public DTOOrder(String username, LocalDateTime purchaseDate, BigDecimal totalAmount, String paymentMethod) {
         this.username = username;
         this.purchaseDate = purchaseDate;
         this.totalAmount = totalAmount;

@@ -30,6 +30,27 @@
 <section class="py-5 bg-light">
     <div class="container mt-5">
         <h2>All Orders</h2>
+        <div class="container mt-5">
+            <form th:action="@{/webShop/admin/order/orderByUsernameAndDates}" method="get" class="row g-3">
+                <div class="col-md-3">
+                    <label for="username" class="form-label">Username:</label>
+                    <input type="text" id="username" name="username" class="form-control" placeholder="Enter username" required>
+                </div>
+                <div class="col-md-3">
+                    <label for="startDate" class="form-label">Start Date:</label>
+                    <input type="date" id="startDate" name="startDate" class="form-control" required>
+                </div>
+                <div class="col-md-3">
+                    <label for="endDate" class="form-label">End Date:</label>
+                    <input type="date" id="endDate" name="endDate" class="form-control" required>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary">Search Orders</button>
+                </div>
+            </form>
+        </div>
+        <br>
+        <br>
         <div th:each="userOrder : ${userOrders}">
             <div class="card mb-3">
                 <div class="card-header order-header">

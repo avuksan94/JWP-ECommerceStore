@@ -19,4 +19,10 @@ public class DTOSubcategory {
         this.name = name;
         this.category = category;
     }
+
+    public DTOSubcategory(Long subcategoryId, String name, DTOCategory category) {
+        this.subcategoryId = subcategoryId;
+        this.name = name;
+        this.category = category;
+    }
 }

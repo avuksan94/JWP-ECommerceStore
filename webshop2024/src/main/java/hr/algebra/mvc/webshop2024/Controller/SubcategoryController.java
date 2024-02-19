@@ -6,6 +6,8 @@ import hr.algebra.dal.webshop2024dal.Entity.Category;
 import hr.algebra.dal.webshop2024dal.Entity.Subcategory;
 import hr.algebra.mvc.webshop2024.DTO.DTOCategory;
 import hr.algebra.mvc.webshop2024.DTO.DTOSubcategory;
+import hr.algebra.mvc.webshop2024.Mapper.CategoryMapper;
+import hr.algebra.mvc.webshop2024.Mapper.SubcategoryMapper;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,16 +19,21 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("webShop")
 public class SubcategoryController {
     private final SubcategoryService subcategoryService;
     private final CategoryService categoryService;
+    private final SubcategoryMapper subcategoryMapper;
+    private final CategoryMapper categoryMapper;
 
-    public SubcategoryController(SubcategoryService subcategoryService, CategoryService categoryService) {
+    public SubcategoryController(SubcategoryService subcategoryService, CategoryService categoryService, SubcategoryMapper subcategoryMapper, CategoryMapper categoryMapper) {
         this.subcategoryService = subcategoryService;
         this.categoryService = categoryService;
+        this.subcategoryMapper = subcategoryMapper;
+        this.categoryMapper = categoryMapper;
     }
 
     @GetMapping("admin/subcategories/list")
@@ -47,7 +54,9 @@ public class SubcategoryController {
                 category.setCategoryId(subcategory.getCategory().getCategoryId());
                 category.setName(subcategory.getCategory().getName());
 
-                subcat.setCategory(category);
+                subcat.setCategory(categoryMapper.CategoryItemToDTOCategory(
+                        new Category(subcategory.getCategory().getCategoryId(),
+                                     subcategory.getCategory().getName())));
 
                 realSubCategories.add(subcat);
             }
@@ -82,65 +91,66 @@ public class SubcategoryController {
 
     @GetMapping("admin/subcategories/showFormForUpdateSubcategory")
     public String showFormForUpdateSubcategory(@RequestParam("subcategoryId") int theId, Model theModel){
-        Subcategory subcategory = subcategoryService.findById(theId);
+        CompletableFuture<Subcategory> subcategoryFuture = CompletableFuture.supplyAsync(() -> subcategoryService.findById(theId));
+        CompletableFuture<List<Category>> allCategoriesFuture = CompletableFuture.supplyAsync(() -> categoryService.findAll());
 
-        DTOSubcategory dtoSubcategory = new DTOSubcategory();
-        dtoSubcategory.setSubcategoryId(subcategory.getSubcategoryId());
-        dtoSubcategory.setName(subcategory.getName());
+        CompletableFuture.allOf(subcategoryFuture, allCategoriesFuture).join();
 
-        DTOCategory category = new DTOCategory();
-        category.setCategoryId(subcategory.getCategory().getCategoryId());
-        category.setName(subcategory.getCategory().getName());
+        Subcategory subcategory = subcategoryFuture.join();
 
-        dtoSubcategory.setCategory(category);
+        DTOSubcategory dtoSubcategory = new DTOSubcategory(subcategory.getSubcategoryId(),
+                        subcategory.getName(),
+                        new DTOCategory(subcategory.getCategory().getCategoryId(),
+                        subcategory.getCategory().getName()));
 
         theModel.addAttribute("subcategory", dtoSubcategory);
 
-        List<DTOCategory> categories = new ArrayList<>();
-        List<Category> allCategories = categoryService.findAll();
-
-        allCategories.forEach(cat ->
-                categories.add(
-                        new DTOCategory(cat.getCategoryId(), cat.getName())
-                ));
+        List<DTOCategory> categories = allCategoriesFuture.join().stream()
+                .map(cat -> new DTOCategory(cat.getCategoryId(), cat.getName()))
+                .collect(Collectors.toList());
 
         theModel.addAttribute("categories", categories);
 
-        //send over to our form
         return "subcategories/subcategory-form";
     }
 
     @PostMapping("admin/subcategories/save")
     public String saveSubcategory(@Valid @ModelAttribute("subcategory") DTOSubcategory subcategory, BindingResult bindingResult, Model model) {
-        // Check for validation errors
         if (bindingResult.hasErrors()) {
+            CompletableFuture<List<DTOCategory>> categoriesFuture = CompletableFuture.supplyAsync(() -> categoryService.findAll().stream()
+                    .map(category -> new DTOCategory(category.getCategoryId(), category.getName()))
+                    .collect(Collectors.toList()));
+
+            model.addAttribute("categories", categoriesFuture.join());
             return "subcategories/subcategory-form";
         }
 
-        List<Subcategory> allDBSubcategories = subcategoryService.findAll();
+        CompletableFuture<List<Subcategory>> allDBSubcategoriesFuture = CompletableFuture.supplyAsync(() -> subcategoryService.findAll());
 
-        Optional<Subcategory> result = allDBSubcategories.stream()
+        allDBSubcategoriesFuture.thenApply(allDBSubcategories -> allDBSubcategories.stream()
                 .filter(subcategoryRes -> subcategory.getName().equals(subcategoryRes.getName()))
-                .findFirst();
-
-        if(result.isPresent()){
+                .findFirst()).join().ifPresentOrElse(result -> {
             model.addAttribute("errorMessage", "Subcategory with that name already exists!");
+
+            CompletableFuture<List<DTOCategory>> categoriesFuture = CompletableFuture.supplyAsync(() -> categoryService.findAll().stream()
+                    .map(category -> new DTOCategory(category.getCategoryId(), category.getName()))
+                    .collect(Collectors.toList()));
+
+            model.addAttribute("categories", categoriesFuture.join());
+        }, () -> {
+            CompletableFuture.runAsync(() -> subcategoryService.save(subcategoryMapper.DTOSubcategoryToSubcategory(subcategory)));
+        });
+
+        if (model.containsAttribute("errorMessage")) {
             return "subcategories/subcategory-form";
+        } else {
+            return "redirect:/webShop/admin/subcategories/list";
         }
-
-        Subcategory subcategoryToSave = new Subcategory();
-        subcategoryToSave.setSubcategoryId(subcategory.getSubcategoryId());
-        subcategoryToSave.setName(subcategory.getName());
-        subcategoryToSave.setCategory(new Category(subcategory.getCategory().getCategoryId(), subcategory.getCategory().getName()));
-        subcategoryService.save(subcategoryToSave);
-
-        return "redirect:/webShop/admin/subcategories/list";
     }
 
     @GetMapping("admin/subcategories/delete")
     public String delete(@RequestParam("subcategoryId") int theId){
-        subcategoryService.deleteById(theId);
-
+        CompletableFuture.runAsync(() -> subcategoryService.deleteById(theId)).join();
         return "redirect:/webShop/admin/subcategories/list";
     }
 }

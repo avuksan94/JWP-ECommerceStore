@@ -56,6 +56,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<Product> findByKeyword(String keyword) {
+        return productRepo.findByKeyword(keyword);
+    }
+
+    @Override
     public Product getProductById(long productId) {
         return productRepo.getProductByProductId(productId);
     }
