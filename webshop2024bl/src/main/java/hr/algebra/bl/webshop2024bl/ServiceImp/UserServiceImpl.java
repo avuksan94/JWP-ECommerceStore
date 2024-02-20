@@ -1,5 +1,6 @@
 package hr.algebra.bl.webshop2024bl.ServiceImp;
 
+import hr.algebra.bl.webshop2024bl.Events.UserRegistrationEvent;
 import hr.algebra.bl.webshop2024bl.Service.SecurityService;
 import hr.algebra.bl.webshop2024bl.Service.UserService;
 import hr.algebra.dal.webshop2024dal.Entity.Authority;
@@ -9,16 +10,20 @@ import hr.algebra.dal.webshop2024dal.Repository.AuthorityRepository;
 import hr.algebra.dal.webshop2024dal.Repository.UserRepository;
 import hr.algebra.utils.CustomExceptions.CustomNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, ApplicationContextAware {
     private final UserRepository userRepo;
     private final AuthorityRepository authorityRepo;
     private final SecurityService securityService;
+    private ApplicationContext applicationContext;
 
     public UserServiceImpl(UserRepository userRepo, AuthorityRepository authorityRepo, SecurityService securityService) {
         this.userRepo = userRepo;
@@ -100,6 +105,12 @@ public class UserServiceImpl implements UserService {
         authority.setUser(user);
         authority.setAuthority(Role.ROLE_SHOPPER);
         authorityRepo.save(authority);
+
+        applicationContext.publishEvent(new UserRegistrationEvent(this, user));
     }
 
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
 }

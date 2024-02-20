@@ -1,5 +1,7 @@
 package hr.algebra.bl.webshop2024bl.ServiceImp;
 
+import hr.algebra.bl.webshop2024bl.Events.OrderEvent;
+import hr.algebra.bl.webshop2024bl.Events.UserRegistrationEvent;
 import hr.algebra.bl.webshop2024bl.Service.OrderService;
 import hr.algebra.dal.webshop2024dal.Entity.*;
 import hr.algebra.dal.webshop2024dal.Repository.OrderItemRepository;
@@ -7,6 +9,9 @@ import hr.algebra.dal.webshop2024dal.Repository.OrderRepository;
 import hr.algebra.dal.webshop2024dal.Repository.ProductRepository;
 import hr.algebra.utils.CustomExceptions.CustomNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -17,10 +22,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class OrderServiceImp implements OrderService {
+public class OrderServiceImp implements OrderService, ApplicationContextAware {
     private final OrderRepository orderRepo;
     private final OrderItemRepository orderItemRepo;
     private final ProductRepository productRepo;
+    private ApplicationContext applicationContext;
 
     public OrderServiceImp(OrderRepository orderRepo, OrderItemRepository orderItemRepo, ProductRepository productRepo) {
         this.orderRepo = orderRepo;
@@ -122,6 +128,7 @@ public class OrderServiceImp implements OrderService {
     @Override
     @Transactional
     public Order save(Order obj) {
+        applicationContext.publishEvent(new OrderEvent(this, obj));
         return orderRepo.save(obj);
     }
 
@@ -133,5 +140,10 @@ public class OrderServiceImp implements OrderService {
             throw new CustomNotFoundException("Order with that ID was not found: " + id);
         }
         orderRepo.deleteById(id);
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 }
