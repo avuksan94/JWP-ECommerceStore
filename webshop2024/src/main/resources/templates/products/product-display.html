@@ -62,7 +62,7 @@
         <div class="product-details">
             <h1 class="product-title" th:text="${product.name}">Product Name</h1>
             <p class="product-description" th:text="${product.description}">Here is a detailed description of the product...</p>
-            <p class="product-price" th:text="${product.price}">$99.99</p>
+            <p class="card-text" th:text="${'Price: $' + product.price}">Price</p>
             <a href="/webShop/products/list" class="btn btn-custom">Back to products</a>
         </div>
     </div>

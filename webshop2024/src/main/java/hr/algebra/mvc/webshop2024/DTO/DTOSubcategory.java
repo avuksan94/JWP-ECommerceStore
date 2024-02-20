@@ -2,7 +2,9 @@ package hr.algebra.mvc.webshop2024.DTO;
 
 import hr.algebra.dal.webshop2024dal.Entity.Category;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @NoArgsConstructor(access = AccessLevel.PUBLIC)

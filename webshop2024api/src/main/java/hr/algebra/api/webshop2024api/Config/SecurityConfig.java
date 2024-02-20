@@ -7,15 +7,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 import javax.sql.DataSource;
 
+//FOR SWAGGER  https://www.baeldung.com/spring-rest-openapi-documentation
+
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
     private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
@@ -35,6 +38,8 @@ public class SecurityConfig {
         logger.info("Configuring Security Filter Chain...");
         http.authorizeHttpRequests(configurer ->
                 configurer
+                        // Swagger UI and API Docs
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/webjars/**", "/api-docs/**").permitAll()
                         //Categories
                         .requestMatchers(HttpMethod.GET, "/webShopApi/categories/allCategories").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/webShopApi/categories/**").hasRole("ADMIN")
@@ -68,5 +73,10 @@ public class SecurityConfig {
         // disable Cross Site Request Forgery (CSRF)
         http.csrf(csfr->csfr.disable());
         return http.build();
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers("/v3/api-docs/**");
     }
 }
