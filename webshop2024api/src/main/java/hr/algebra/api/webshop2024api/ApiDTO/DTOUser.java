@@ -1,5 +1,6 @@
 package hr.algebra.api.webshop2024api.ApiDTO;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 import java.util.HashSet;
@@ -10,9 +11,12 @@ import java.util.Set;
 @Setter
 @ToString
 public class DTOUser {
+    @NotEmpty(message = "Username is required")
     private String username;
+    @NotEmpty(message = "Password is required")
     private String password;
     private boolean enabled;
+    @NotEmpty(message = "Email is required")
     private String email;
     private Set<DTOAuthority> authorities = new HashSet<>();
 

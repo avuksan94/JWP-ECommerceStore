@@ -74,7 +74,6 @@ public class CategoryRestController {
             throw new CustomNotFoundException("Category not found for id: " + categoryId);
         }
 
-        //extistingCategory.setCategoryId(category.getCategoryId());
         extistingCategory.setName(category.getName());
 
         Category updatedCategory = categoryService.save(extistingCategory);

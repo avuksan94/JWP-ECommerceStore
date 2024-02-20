@@ -1,13 +1,10 @@
 package hr.algebra.api.webshop2024api.Rest;
 
-import hr.algebra.api.webshop2024api.ApiDTO.DTOCategory;
-import hr.algebra.api.webshop2024api.ApiDTO.DTOImage;
 import hr.algebra.api.webshop2024api.ApiDTO.DTOProductImage;
 import hr.algebra.api.webshop2024api.ApiMapper.ImageMapper;
 import hr.algebra.api.webshop2024api.ApiMapper.ProductImageMapper;
 import hr.algebra.api.webshop2024api.ApiMapper.ProductMapper;
 import hr.algebra.bl.webshop2024bl.Service.ProductImageService;
-import hr.algebra.dal.webshop2024dal.Entity.Category;
 import hr.algebra.dal.webshop2024dal.Entity.ProductImage;
 import hr.algebra.utils.CustomExceptions.CustomNotFoundException;
 import jakarta.validation.Valid;
@@ -21,13 +18,13 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/webShopApi")
-public class ProductImageController {
+public class ProductImageRestController {
     private final ProductImageService productImageService;
     private final ProductImageMapper productImageMapper;
     private final ImageMapper imageMapper;
     private final ProductMapper productMapper;
 
-    public ProductImageController(ProductImageService productImageService, ProductImageMapper productImageMapper, ImageMapper imageMapper, ProductMapper productMapper) {
+    public ProductImageRestController(ProductImageService productImageService, ProductImageMapper productImageMapper, ImageMapper imageMapper, ProductMapper productMapper) {
         this.productImageService = productImageService;
         this.productImageMapper = productImageMapper;
         this.imageMapper = imageMapper;

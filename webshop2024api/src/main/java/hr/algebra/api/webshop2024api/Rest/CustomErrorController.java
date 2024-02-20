@@ -22,20 +22,34 @@ public class CustomErrorController implements ErrorController {
 
         if (status != null) {
             int statusCode = Integer.parseInt(status.toString());
+            HttpStatus httpStatus = HttpStatus.resolve(statusCode);
 
-            if (statusCode == HttpStatus.NOT_FOUND.value()) {
-                ErrorResponse errorResponse = new ErrorResponse();
-                errorResponse.setTimestamp(LocalDateTime.now());
-                errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
-                errorResponse.setError(HttpStatus.NOT_FOUND.getReasonPhrase());
-                errorResponse.setMessage("The requested resource was not found");
-                errorResponse.setPath(request.getRequestURI());
-
-                return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+            if (httpStatus != null) {
+                switch (httpStatus) {
+                    case NOT_FOUND:
+                        return buildErrorResponse(HttpStatus.NOT_FOUND, "The requested resource was not found", request);
+                    case UNAUTHORIZED:
+                        return buildErrorResponse(HttpStatus.UNAUTHORIZED, "You are not authorized!", request);
+                    case FORBIDDEN:
+                        return buildErrorResponse(HttpStatus.FORBIDDEN, "You are not allowed to access this resource!", request);
+                    default:
+                        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error has occurred", request);
+                }
             }
         }
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error has occurred", request);
+    }
+
+    private ResponseEntity<ErrorResponse> buildErrorResponse(HttpStatus status, String message, HttpServletRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setTimestamp(LocalDateTime.now());
+        errorResponse.setStatus(status.value());
+        errorResponse.setError(status.getReasonPhrase());
+        errorResponse.setMessage(message);
+        errorResponse.setPath(request.getRequestURI());
+
+        return new ResponseEntity<>(errorResponse, status);
     }
 }
 

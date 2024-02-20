@@ -2,6 +2,7 @@ package hr.algebra.api.webshop2024api.ApiDTO;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Setter
 @ToString
 public class DTOUserConnection {
+    @NotEmpty(message = "Username is required")
     private String username;
     private LocalDateTime lastConnection;
     private String ipAddress;
