@@ -1,6 +1,7 @@
 package hr.algebra.mvc.webshop2024.Controller;
 
 import hr.algebra.bl.webshop2024bl.Service.*;
+import hr.algebra.dal.webshop2024dal.Consts.WebShopConsts;
 import hr.algebra.dal.webshop2024dal.Entity.*;
 import hr.algebra.mvc.webshop2024.ViewModel.CartItemVM;
 import jakarta.servlet.http.HttpServletRequest;
@@ -114,7 +115,7 @@ public class ShoppingController {
                             .filter(image -> Objects.equals(image.getProduct().getProductId(), realCartItem.getProduct().getProductId()))
                             .findFirst()
                             .map(image -> image.getImage().getImageUrl())
-                            .orElse("https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png");
+                            .orElse(WebShopConsts.DEFAULT_IMAGE_FILENAME);
 
                     CartItemVM cartItemVM = new CartItemVM(
                             realCartItem.getCartItemId(),

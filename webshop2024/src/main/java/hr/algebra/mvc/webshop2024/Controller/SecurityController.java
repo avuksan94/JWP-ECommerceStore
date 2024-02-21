@@ -38,6 +38,7 @@ public class SecurityController {
         List<User> users = userService.findAll();
 
         String usersCount = Integer.toString(users.size());
+        /*
         logger.info("Created users: " + usersCount);
         for (User user:
                 users) {
@@ -49,6 +50,8 @@ public class SecurityController {
                 logger.info(r.getAuthority().toString());
             }
         }
+         */
+
         return "security/security-login";
     }
 

@@ -76,7 +76,7 @@
         <div class="row">
             <div th:each="product : ${products}" class="col-md-4 mb-4">
                 <div class="card" style="width: 100%;">
-                    <a th:href="@{/webShop/products/showSelectedProduct(productId=${product.productId})}" target="_blank">
+                    <a th:href="@{/webShop/products/showSelectedProduct(productId=${product.productId})}">
                         <img class="card-img-top" th:src="@{${product.imageUrls}}" alt="Card image cap">
                     </a>
                     <div class="card-body">

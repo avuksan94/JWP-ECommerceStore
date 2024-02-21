@@ -4,6 +4,7 @@ import hr.algebra.bl.webshop2024bl.Service.ImageService;
 import hr.algebra.bl.webshop2024bl.Service.ProductImageService;
 import hr.algebra.bl.webshop2024bl.Service.ProductService;
 import hr.algebra.bl.webshop2024bl.Service.SubcategoryService;
+import hr.algebra.dal.webshop2024dal.Consts.WebShopConsts;
 import hr.algebra.dal.webshop2024dal.Entity.Image;
 import hr.algebra.dal.webshop2024dal.Entity.Product;
 import hr.algebra.dal.webshop2024dal.Entity.ProductImage;
@@ -49,7 +50,7 @@ public class ProductController {
             List<ProductVM> realProducts = new ArrayList<>();
             for (var product : products) {
                 ProductVM prod = new ProductVM();
-                String imageLink = "https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png";
+                String imageLink = WebShopConsts.DEFAULT_IMAGE_FILENAME;
                 prod.setProductId(product.getProductId());
                 prod.setName(product.getName());
                 prod.setDescription(product.getDescription());
@@ -121,7 +122,7 @@ public class ProductController {
             List<ProductVM> realProducts = new ArrayList<>();
             for (var product : products) {
                 ProductVM prod = new ProductVM();
-                String imageLink = "https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png"; // Default image link
+                String imageLink = WebShopConsts.DEFAULT_IMAGE_FILENAME; // Default image link
                 prod.setProductId(product.getProductId());
                 prod.setName(product.getName());
                 prod.setDescription(product.getDescription());
@@ -165,7 +166,7 @@ public class ProductController {
             List<ProductVM> realProducts = new ArrayList<>();
             for (var product : products) {
                 ProductVM prod = new ProductVM();
-                String imageLink = "https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png"; // Default image link
+                String imageLink = WebShopConsts.DEFAULT_IMAGE_FILENAME; // Default image link
                 prod.setProductId(product.getProductId());
                 prod.setName(product.getName());
                 prod.setDescription(product.getDescription());
@@ -207,7 +208,7 @@ public class ProductController {
             List<ProductVM> realProducts = new ArrayList<>();
             for (var product : products) {
                 ProductVM prod = new ProductVM();
-                String imageLink = "https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png";
+                String imageLink = WebShopConsts.DEFAULT_IMAGE_FILENAME;
                 prod.setProductId(product.getProductId());
                 prod.setName(product.getName());
                 prod.setDescription(product.getDescription());
@@ -282,7 +283,7 @@ public class ProductController {
             productModel.setSubcategoryId(product.getSubcategory().getSubcategoryId());
 
             // Setting a default image if no images are associated with the product
-            String imageLink = productImages.isEmpty() ? "https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png"
+            String imageLink = productImages.isEmpty() ? WebShopConsts.DEFAULT_IMAGE_FILENAME
                     : productImages.get(0).getImage().getImageUrl();
 
             productModel.setImageUrls(imageLink);

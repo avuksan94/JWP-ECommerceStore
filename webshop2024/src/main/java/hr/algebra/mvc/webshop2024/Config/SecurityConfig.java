@@ -86,6 +86,10 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/webShop/order/finalize").hasRole("SHOPPER")
                                 .requestMatchers(HttpMethod.GET, "/webShop/order/forShopper").hasRole("SHOPPER")
 
+                                //ADMIN PAGES - NOTIFICATIONS
+                                .requestMatchers(HttpMethod.GET, "/webShop/admin/notifications/list").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/webShop/admin/notifications/showSelectedNotification").hasRole("ADMIN")
+
                                 //Shopping controller
                                 .requestMatchers(HttpMethod.POST, "/webShop/shopping/removeFromCartCart").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/webShop/shopping/addToCart").permitAll()
@@ -109,9 +113,8 @@ public class SecurityConfig {
                         .clearAuthentication(true)
                         .deleteCookies("JSESSIONID")
                         .permitAll());
-        // use HTTP Basic authentication
+
         http.httpBasic(Customizer.withDefaults());
-        // disable Cross Site Request Forgery (CSRF)
         http.csrf(csfr->csfr.disable());
         return http.build();
     }

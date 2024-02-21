@@ -1,6 +1,7 @@
 package hr.algebra.mvc.webshop2024.Controller;
 
 import hr.algebra.bl.webshop2024bl.Service.*;
+import hr.algebra.dal.webshop2024dal.Consts.WebShopConsts;
 import hr.algebra.dal.webshop2024dal.Entity.*;
 import hr.algebra.dal.webshop2024dal.Enum.PaymentType;
 import hr.algebra.mvc.webshop2024.ViewModel.CartItemVM;
@@ -113,7 +114,7 @@ public class OrderController {
 
             for (OrderItem realOrderItem : realOrderItems) {
                 OrderItemVM orderItemVM = new OrderItemVM();
-                String imageLink = "https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png";
+                String imageLink = WebShopConsts.DEFAULT_IMAGE_FILENAME;
 
                 for (ProductImage image : productImages) {
                     if (Objects.equals(image.getProduct().getProductId(), realOrderItem.getProduct().getProductId())) {
@@ -156,7 +157,7 @@ public class OrderController {
 
             for (OrderItem realOrderItem : realOrderItems) {
                 OrderItemVM orderItemVM = new OrderItemVM();
-                String imageLink = "https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png";
+                String imageLink = WebShopConsts.DEFAULT_IMAGE_FILENAME;
 
                 for (ProductImage image : productImages) {
                     if (Objects.equals(image.getProduct().getProductId(), realOrderItem.getProduct().getProductId())) {
@@ -203,7 +204,7 @@ public class OrderController {
 
             for (OrderItem realOrderItem : realOrderItems) {
                 OrderItemVM orderItemVM = new OrderItemVM();
-                String imageLink = "https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png";
+                String imageLink = WebShopConsts.DEFAULT_IMAGE_FILENAME;
 
                 for (ProductImage image : productImages) {
                     if (Objects.equals(image.getProduct().getProductId(), realOrderItem.getProduct().getProductId())) {
