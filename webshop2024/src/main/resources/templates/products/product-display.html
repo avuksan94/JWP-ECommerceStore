@@ -22,10 +22,10 @@
 
     <script>
         $(document).ready(function(){
-            // Fetching the cart item count after the navbar has been loaded
+
             updateCartItemCount();
 
-             function updateCartItemCount() {
+            function updateCartItemCount() {
                 $.get('/webShop/shopping/cartItemCount', function(data) {
                     $('#cart-item-count').text(data);
                 }).fail(function() {
@@ -34,15 +34,17 @@
             }
 
             $('.custom-add-button').click(function(event) {
-            event.preventDefault();
-            const productId = $(this).data('product-id');
-            $.post('/webShop/shopping/addToCart', { productId: productId, quantity: 1 }, function(response) {
-                alert('Item added to cart');
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-                console.log("Request failed: " + textStatus + ", " + errorThrown);
-                alert("Failed to add item to cart: " + jqXHR.responseText);
+                event.preventDefault();
+                const productId = $(this).data('product-id');
+                $.post('/webShop/shopping/addToCart', { productId: productId, quantity: 1 }, function(response) {
+                    alert('Item added to cart');
+                    // Call updateCartItemCount() again to refresh the count
+                    updateCartItemCount();
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    console.log("Request failed: " + textStatus + ", " + errorThrown);
+                    alert("Failed to add item to cart: " + jqXHR.responseText);
+                });
             });
-        });
 
         });
     </script>
@@ -56,7 +58,7 @@
         <div class="product-image">
             <img class="animate__animated animate__fadeInLeft" th:src="@{${image.imageUrl}}" alt="Product Image">
             <div>
-                <a href="#" class="btn custom-add-button bi bi-cart-plus" th:data-product-id="${product.productId}" data-product-id="">Add to cart</a>
+                <a href="#" class="btn custom-add-button bi bi-cart-plus" th:data-product-id="${product.productId}">Add to cart</a>
             </div>
         </div>
         <div class="product-details">

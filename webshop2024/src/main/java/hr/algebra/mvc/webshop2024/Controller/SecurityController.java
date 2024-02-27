@@ -1,10 +1,12 @@
 package hr.algebra.mvc.webshop2024.Controller;
 
 import hr.algebra.bl.webshop2024bl.Service.UserService;
+import hr.algebra.mvc.webshop2024.DTO.DTOUser;
 import hr.algebra.utils.CustomExceptions.CustomNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.apache.catalina.UserDatabase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -66,14 +68,14 @@ public class SecurityController {
 
     @GetMapping("/security/showFormCreateUser")
     public String showFormCreateUser(Model theModel){
-        User user = new User();
+        DTOUser user = new DTOUser();
         theModel.addAttribute("user", user);
 
         return "security/security-registration";
     }
 
     @PostMapping("/security/saveUser")
-    public String saveUser(@Valid @ModelAttribute("user") User user, BindingResult bindingResult, Model model) {
+    public String saveUser(@Valid @ModelAttribute("user") DTOUser user, BindingResult bindingResult, Model model) {
         // Check for validation errors
         if (bindingResult.hasErrors()) {
             return "security/security-registration";

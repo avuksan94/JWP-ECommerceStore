@@ -90,6 +90,9 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/webShop/admin/notifications/list").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/webShop/admin/notifications/showSelectedNotification").hasRole("ADMIN")
 
+                                //PAYPAL
+                                .requestMatchers(HttpMethod.POST, "/webShop/paypal/createPayment/**").hasRole("SHOPPER")
+
                                 //Shopping controller
                                 .requestMatchers(HttpMethod.POST, "/webShop/shopping/removeFromCartCart").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/webShop/shopping/addToCart").permitAll()

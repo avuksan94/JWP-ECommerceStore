@@ -19,7 +19,6 @@ public class Webshop2024Application {
 	public static void main(String[] args) {
 		SpringApplication.run(Webshop2024Application.class, args);
 	}
-
 	@Bean
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
 		return new BCryptPasswordEncoder();

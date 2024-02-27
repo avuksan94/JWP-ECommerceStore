@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.security.Principal;
@@ -43,7 +44,7 @@ public class OrderController {
     }
 
     @PostMapping("/order/finalize")
-    public String orderProducts(Principal principal,@RequestParam("paymentMethod") PaymentType paymentMethod) {
+    public String orderProducts(Principal principal,@RequestParam("paymentMethod") PaymentType paymentMethod,RedirectAttributes redirectAttributes) {
         if (principal == null) {
             return "redirect:/webShop/security/login";
         }
@@ -58,13 +59,20 @@ public class OrderController {
             return "redirect:/webShop/products/list";
         }
 
-        Order order = createOrder(principal, calculateTotalAmount(cartItems),paymentMethod);
+        BigDecimal totalAmount = calculateTotalAmount(cartItems);
+
+        //gonna try this later
+        //if (paymentMethod == PaymentType.PAYPAL) {
+        //    redirectAttributes.addAttribute("totalAmount", totalAmount);
+        //    return "redirect:/webShop/paypal/createPayment";
+        //}
+        Order order = createOrder(principal, totalAmount, paymentMethod);
         orderService.save(order);
 
         List<OrderItem> orderItems = createOrderItems(cartItems, order);
         orderItems.forEach(orderItemService::save);
 
-        //I want this removed when the order is finished
+        // Clean up cart after order is finalized
         cartItems.forEach(cartItem -> cartItemService.deleteById(cartItem.getCartItemId()));
         shoppingCartService.deleteById(shoppingCartOpt.get().getCartId());
 
