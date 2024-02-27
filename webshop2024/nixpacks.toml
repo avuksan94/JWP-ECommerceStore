@@ -1,6 +1,5 @@
 [build]
-build_command = "mvn -f webshop2024/pom.xml package -DskipTests"
+build_command = "mvn -f webshop2024/pom.xml clean install -DskipTests"
 
 [run]
-run_command = "java -jar webshop2024/target/webshop2024-0.0.1-SNAPSHOT.jar"
-
+run_command = "mvn -f webshop2024/pom.xml spring-boot:run"
